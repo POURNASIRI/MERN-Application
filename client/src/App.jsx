@@ -1,8 +1,10 @@
 import {Route,Routes} from 'react-router-dom'
-import {Home,Projects,About,SignIn,SignUp} from './index.js'
+import {Home,Projects,About,SignIn,SignUp, Header} from './index.js'
 
 function App() {
   return (
+    <div>
+      <Header/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/projects' element={<Projects/>}/>
@@ -10,6 +12,7 @@ function App() {
         <Route path='/signin' element={<SignIn/>}/>
         <Route path='/signup' element={<SignUp/>}/>
       </Routes>
+    </div>
   )
 }
 
