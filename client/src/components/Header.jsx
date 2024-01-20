@@ -38,7 +38,9 @@ export default function Header() {
             <FaMoon/>
         </Button>
         <Link to={'/signin'}>
-            <Button className='w-24 h-10' 
+            <Button
+            outline 
+            className='w-24 h-10' 
             gradientDuoTone={'purpleToBlue'}>Sign In</Button>
         </Link>
         <NavbarToggle/>
