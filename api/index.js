@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import users from './routes/user.route.js'
 import signup from './routes/auth.route.js'
+import signin from './routes/auth.route.js'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.listen(3000, () => {
 
 app.use('/api/user/',users)
 app.use('/api/auth', signup)
+app.use('/api/auth', signin)
 
 
 
