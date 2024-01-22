@@ -45,9 +45,12 @@ export const signup  = async (req,res,next)=>{
          const token = jwt.sign({id:validUser._id},process.env.JWT_SECREC_KEY);
 
          // remove password from response
-         const {password:pass,...others} = validUser._doc
+         const {password:pass,...user} = validUser._doc
 
-         res.status(200).cookie('access_token,token',{httpOnly:true}).json(others)
+         res.status(200).cookie('access_token,token',{httpOnly:true}).json({
+            message:"Login successfull",
+            user
+         })
       } catch (error) {
          next(error)
       }
