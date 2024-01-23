@@ -2,6 +2,8 @@ import {Button, Label, Spinner, TextInput} from 'flowbite-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { useDispatch, useSelector } from 'react-redux'
+import { signInSuccess, signInUser } from '../redux/userSlice'
 
 export default function SignIn() {
 
@@ -10,17 +12,18 @@ export default function SignIn() {
         email:"",
         password:""
       })
+      // navigate
+      const navigate  = useNavigate()
 
-      // loading state
-      const[loading,setLoading] = useState(false)
-
+      // redux state
+      const dispatch = useDispatch()
+      const {loading} = useSelector(state => state.user)
+      
       // handle change
       const handleChange = (e) => {
         setFormData({...formData,[e.target.id]:e.target.value.trim()})
       }
 
-      // navigate
-      const navigate  = useNavigate()
 
       const handleSubmit = async (e) => {
         e.preventDefault()
@@ -29,24 +32,23 @@ export default function SignIn() {
         }else{
           // send data
           try {
-            setLoading(true)
+            dispatch(signInUser())
             const res = await fetch('/api/auth/signin', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(formData),
             });
             const data = await res.json();
-            console.log(data)
+            
             if(res.ok){
               toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+              dispatch(signInSuccess(data.user))
               navigate('/')
             }if (data.success === false){
               toast.error(data.message,{autoClose: 1000,position: 'top-right'})
             }
           } catch (error) {
             toast.error(error.message,{autoClose: 1000,position: 'top-right'})
-          }finally{
-            setLoading(false)
           }
         }
       }
@@ -87,7 +89,9 @@ export default function SignIn() {
                 onChange={handleChange}
                 placeholder='Password'/>
                 </div>
-                <Button type='submit' gradientDuoTone={"purpleToBlue"}>
+                <Button 
+                disabled={loading}
+                type='submit' gradientDuoTone={"purpleToBlue"}>
                   {
                     loading ? <div className="flex justify-center">
                       <Spinner aria-label="Default status example" />
