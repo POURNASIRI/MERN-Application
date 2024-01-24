@@ -84,7 +84,7 @@ export const signup  = async (req,res,next)=>{
          username:name,
          email,
          password: hashedPassword,
-         profilePicture: googlePhotoUrl,
+         image: googlePhotoUrl,
        });
        await newUser.save();
        const token = jwt.sign(
