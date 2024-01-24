@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import users from './routes/user.route.js'
 import signup from './routes/auth.route.js'
 import signin from './routes/auth.route.js'
+import googleAuth from './routes/auth.route.js'
 
 dotenv.config()
 
