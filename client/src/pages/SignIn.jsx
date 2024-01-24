@@ -61,13 +61,13 @@ export default function SignIn() {
             <div className='flex-1'>
             <div
               className='
-              text-5xl font-bold dark:text-white' 
+              text-5xl font-bold ' 
               to={"/"}>
                   <span className='px-2 py-1 bg-gradient-to-r
                   from-indigo-500 to-blue-500 text-white rounded'>E&P</span>
                   Blog 
              </div>
-             <p className='dark:text-white mt-6 text-sm'>
+             <p className=' mt-6 text-sm'>
               Enter your Email and password to sign in or you can use your  google account 
              </p>
             </div>
@@ -78,14 +78,14 @@ export default function SignIn() {
               onSubmit={handleSubmit}
               className='flex flex-col gap-3  '>
                 <div>
-                <Label value='your Email' className='dark:text-white'/>
+                <Label value='your Email' className='dark:text-gray-500'/>
                 <TextInput type='email'
                 id='email'
                 onChange={handleChange} 
                 placeholder='Ex: 0Pw5D@example.com'/>
                 </div>
                 <div>
-                <Label value='your Password' className='dark:text-white'/>
+                <Label value='your Password' className='dark:text-gray-500'/>
                 <TextInput type='password'
                 id='password'
                 onChange={handleChange}
