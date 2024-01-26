@@ -4,13 +4,15 @@ import { useSelector } from 'react-redux'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import { app } from '../firebase'
 import { toast } from 'react-toastify'
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function DashProfile() {
 
   const [image,setImage] = useState(null)
   const [imageUrl,setImageUrl] = useState(null)
   const {currentUser} = useSelector(state => state.user)
-  const [imageUploadingProgress,setImageUploadingProgress] = useState(0)
+
 
     //for select image input by click on image we use useRef 
   //and set on click event on image to get ref and click
@@ -38,13 +40,13 @@ export default function DashProfile() {
     uploadTask.on('state_changed',
     (snapshot) => {
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      if(progress){
+      if(progress === 100){
         toast.success("Image uploaded successfully",{autoClose: 1000,position: 'top-right'})
       }
 
     },
     (error) => {
-      console.log(error)
+      toast.error(error.message,{autoClose: 1000,position: 'top-right'})
     },
     ()=>{
       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL)=>{
@@ -54,8 +56,10 @@ export default function DashProfile() {
     )
   }
 
+  
 
-console.log(imageUploadingProgress)
+
+
  
   
  
@@ -66,7 +70,7 @@ console.log(imageUploadingProgress)
       <h1 className='text-center text-4xl mb-5 font-semibold'>Profile</h1>
       <form className='flex flex-col'>
         <input type="file" accept='image/*'hidden  onChange={handleImage} ref={FileRef}/>
-        <div  className="w-32 h-32 self-center shadow-lg rounded-full overflow-hidden">
+        <div className=" relative w-32 h-32 self-center shadow-lg rounded-full">
         <img src={imageUrl ||currentUser?.image} 
         onClick={()=>FileRef.current.click()}
         className= "w-full h-full rounded-full object-cover border-8 border-[lightgray]" alt={currentUser?.name} />
