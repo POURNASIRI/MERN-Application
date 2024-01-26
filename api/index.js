@@ -5,6 +5,7 @@ import users from './routes/user.route.js'
 import signup from './routes/auth.route.js'
 import signin from './routes/auth.route.js'
 import googleAuth from './routes/auth.route.js'
+import cookieParser from 'cookie-parser'
 
 dotenv.config()
 
@@ -24,6 +25,8 @@ app.listen(3000, () => {
 })
 
 
+
+app.use(cookieParser())
 app.use('/api/user/',users)
 app.use('/api/auth', signup)
 app.use('/api/auth', signin)

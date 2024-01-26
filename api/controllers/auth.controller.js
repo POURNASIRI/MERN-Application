@@ -47,7 +47,7 @@ export const signup  = async (req,res,next)=>{
          // remove password from response
          const {password:pass,...user} = validUser._doc
 
-         res.status(200).cookie('access_token,token',{httpOnly:true}).json({
+         res.status(200).cookie('access_token',token,{httpOnly:true}).json({
             message:"Login successfull",
             user
          })
@@ -94,7 +94,7 @@ export const signup  = async (req,res,next)=>{
        const { password, ...rest } = newUser._doc;
        res
          .status(200)
-         .cookie('access_token', token, {
+         .cookie('access_token',token, {
            httpOnly: true,
          })
          .json({rest});
