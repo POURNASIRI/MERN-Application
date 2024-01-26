@@ -4,6 +4,8 @@ import { HiArrowSmRight, HiUser } from 'react-icons/hi'
 import { Link, useLocation } from 'react-router-dom'
 
 export default function DashSidebar() {
+
+ 
     const location = useLocation()
     const [tab,setTabe] = useState("")
    
@@ -19,7 +21,9 @@ export default function DashSidebar() {
         <Sidebar.Items>
             <Sidebar.ItemGroup>
                 <Link to={'/dashboard?tab=profile'}>
-                <Sidebar.Item className='cursor-pointer' active={tab === "profile"}
+                <Sidebar.Item
+                 as='div'
+                className='cursor-pointer' active={tab === "profile"}
                  icon={HiUser} label={"User"} labelColor="dark ">
                     Profile
                 </Sidebar.Item>
