@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
     image:{
         type:String,
         default:"https://www.mgp.net.au/wp-content/uploads/2023/05/150-1503945_transparent-user-png-default-user-image-png-png.png"
+    },
+    isAdmin:{
+    type:Boolean,
+    default:false
     }
 },{timestamps:true}
 ) 

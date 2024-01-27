@@ -42,7 +42,7 @@ export const signup  = async (req,res,next)=>{
             return next(errorHandler(400,"Invalid password"))
          }
          // create jwt token
-         const token = jwt.sign({id:validUser._id},process.env.JWT_SECREC_KEY);
+         const token = jwt.sign({id:validUser._id,isAdmin:validUser.isAdmin},process.env.JWT_SECREC_KEY);
 
          // remove password from response
          const {password:pass,...user} = validUser._doc
@@ -65,9 +65,7 @@ export const signup  = async (req,res,next)=>{
      const user = await User.findOne({ email });
      if (user) {
        const token = jwt.sign(
-         { id: user._id, isAdmin: user.isAdmin },
-         process.env.JWT_SECREC_KEY
-       );
+         { id: user._id, isAdmin: user.isAdmin },process.env.JWT_SECREC_KEY);
        const { password, ...rest } = user._doc;
        res
          .status(200)
@@ -88,9 +86,7 @@ export const signup  = async (req,res,next)=>{
        });
        await newUser.save();
        const token = jwt.sign(
-         { id: newUser._id, isAdmin: newUser.isAdmin },
-         process.env.JWT_SECRET
-       );
+         { id: newUser._id, isAdmin: newUser.isAdmin },process.env.JWT_SECRET);
        const { password, ...rest } = newUser._doc;
        res
          .status(200)
