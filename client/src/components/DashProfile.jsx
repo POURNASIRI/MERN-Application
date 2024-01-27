@@ -1,11 +1,15 @@
-import { Button, TextInput } from 'flowbite-react'
+import { Button, Modal, TextInput, } from 'flowbite-react'
 import { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage'
 import { app } from '../firebase'
 import { toast } from 'react-toastify'
 import 'react-circular-progressbar/dist/styles.css';
-import { updateUserFailure, updateUserStart, updateUserSuccess } from '../redux/userSlice'
+import { deleteUserStart, deleteUserSuccess, 
+  updateUserFailure, updateUserStart, 
+  updateUserSuccess } from '../redux/userSlice'
+import { useNavigate } from 'react-router-dom'
+import{HiOutlineExclamationCircle} from 'react-icons/hi'
 
 export default function DashProfile() {
 
@@ -13,10 +17,17 @@ export default function DashProfile() {
   // states
   const [image,setImage] = useState(null)
   const [imageUrl,setImageUrl] = useState(null)
-  const {currentUser} = useSelector(state => state.user)
-  const [formData,setFormData] = useState({})
+  const {currentUser,loading} = useSelector(state => state.user)
+  const [formData,setFormData] = useState({
+    username:currentUser?.username,
+    email:currentUser?.email,
+    password:currentUser?.password
+  })
+  const navigate = useNavigate()
+  const[showModal,setShowModal] = useState(false)
+
   
-  //for select image input by click on image we use useRef 
+//for select image input by click on image we use useRef 
 //and set on click event on image to get ref and click
   const FileRef = useRef()
 
@@ -37,6 +48,7 @@ export default function DashProfile() {
       setImageUrl(URL.createObjectURL(file))   //this method is used to convert file into url
     }
   }
+
 
 
   // upload image
@@ -83,10 +95,10 @@ export default function DashProfile() {
         })
         const data = await res.json()
         if (res.ok) {
-          toast.success(data.message)
+          toast.success(data.message,{autoClose: 1000,position: 'top-right'})
           dispatch(updateUserSuccess(data.rest))
         }else{
-          toast.error(data.message)
+          toast.error(data.message,{autoClose: 1000,position: 'top-right'})
         }
     } catch (error) {
       console.log(error)
@@ -96,9 +108,27 @@ export default function DashProfile() {
   }
 
 
+  // deleteUser
+  const deleteUser = async () => {
+    try {
+      dispatch(deleteUserStart())
+      const res = await fetch(`/api/user/delete/${currentUser?._id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+        dispatch(deleteUserSuccess())
+        navigate("/signin")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
- 
-  
+
+
  
   return (
     <div className='max-w-lg mx-auto p-3 w-full md:mt-7'>
@@ -113,12 +143,47 @@ export default function DashProfile() {
         <TextInput onChange={handleChange} id='username' type='text' defaultValue={currentUser?.username} placeholder='Username' className='my-3'/>
         <TextInput onChange={handleChange} id='email' type='email' defaultValue={currentUser?.email} placeholder='Email' className='my-3'/>
         <TextInput onChange={handleChange} id='password' type='password'placeholder='password' className='my-3'/>
-        <Button type='submit' gradientDuoTone={'purpleToBlue'} outline>Update</Button>
+        <Button 
+        type='submit' gradientDuoTone={'purpleToBlue'} outline>
+               {
+                    loading ? <div className="flex justify-center">
+                      <Spinner aria-label="Default status example" />
+                      <span className="pl-3">Loading...</span>
+                    </div>
+                     : "Update"
+                  }
+        </Button>
       </form>
       <div className='flex flex-col mt-4 gap-4'>
-        <Button color={"red"} >Delete Account</Button>
+        <Button onClick={()=>setShowModal(true)} color={"red"} >
+          Delete Account
+        </Button>
         <Button color={"red"} >Sign Out</Button>
       </div>
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={deleteUser}>
+                Yes, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
