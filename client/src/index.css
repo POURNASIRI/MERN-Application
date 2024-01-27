@@ -3,9 +3,19 @@
 @tailwind utilities;
 
 
-body{
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+}
+
+
+body{
+    height: 100vh;
+}
+
+
+.ql-editor{
+    font-size: 1.05rem;
 }
