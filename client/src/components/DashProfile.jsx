@@ -10,7 +10,7 @@ import { deleteUserStart, deleteUserSuccess,
   signoutUserSuccess, 
   updateUserFailure, updateUserStart, 
   updateUserSuccess } from '../redux/userSlice'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import{HiOutlineExclamationCircle} from 'react-icons/hi'
 
 export default function DashProfile() {
@@ -174,6 +174,14 @@ const handleSignout = async () =>{
                   }
         </Button>
       </form>
+      {
+          currentUser?.isAdmin === true &&(
+            <Link className='flex flex-col mt-4 gap-4'
+            to="/create-post">
+            <Button gradientDuoTone={'purpleToBlue'}  >Create Post</Button>
+            </Link>
+          )
+        }
       <div className='flex flex-col mt-4 gap-4'>
         <Button onClick={()=>setShowModal(true)} color={"red"} >
           Delete Account
