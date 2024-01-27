@@ -1,9 +1,11 @@
 import {Avatar, Button, Dropdown, DropdownDivider, DropdownHeader, DropdownItem, Navbar, NavbarCollapse, NavbarLink, NavbarToggle, TextInput} from 'flowbite-react'
-import { Link ,useLocation} from 'react-router-dom'
+import { Link ,useLocation, useNavigate} from 'react-router-dom'
 import{AiOutlineSearch} from 'react-icons/ai'
 import {FaMoon, FaSun} from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleTheme } from '../redux/themeSlice'
+import { signoutUserStart, signoutUserSuccess } from '../redux/userSlice'
+import { toast } from 'react-toastify'
 
 export default function Header() {
 
@@ -13,6 +15,30 @@ export default function Header() {
         const{currentUser} = useSelector(state => state.user)
         const dispatch = useDispatch()
         const {theme} = useSelector(state => state.theme)
+        const navigate = useNavigate()
+
+
+
+        const handleSignout = async () =>{
+            try {
+              dispatch(signoutUserStart())
+              const res = await fetch("/api/user/signout", {
+                method: "POST",
+              })
+              const data = await res.json()
+              if (!res.ok) {
+                toast.error(data.message,{autoClose: 1000,position: 'top-right'})
+              }else{
+                dispatch(signoutUserSuccess())
+                toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+                navigate("/signin")
+              }
+        
+            } catch (error) {
+               console.log(error)
+            }
+        }
+
 
   return (
     <Navbar className='border-b-2'>
@@ -67,7 +93,7 @@ export default function Header() {
                             Profile
                         </DropdownItem>
                         <DropdownDivider/>
-                        <DropdownItem>
+                        <DropdownItem onClick={handleSignout}>
                             Sign out
                         </DropdownItem>
                     </Link>

@@ -6,6 +6,8 @@ import { app } from '../firebase'
 import { toast } from 'react-toastify'
 import 'react-circular-progressbar/dist/styles.css';
 import { deleteUserStart, deleteUserSuccess, 
+  signoutUserStart, 
+  signoutUserSuccess, 
   updateUserFailure, updateUserStart, 
   updateUserSuccess } from '../redux/userSlice'
 import { useNavigate } from 'react-router-dom'
@@ -128,7 +130,25 @@ export default function DashProfile() {
   }
 
 
+const handleSignout = async () =>{
+    try {
+      dispatch(signoutUserStart())
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        toast.error(data.message,{autoClose: 1000,position: 'top-right'})
+      }else{
+        dispatch(signoutUserSuccess())
+        toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+        navigate("/signin")
+      }
 
+    } catch (error) {
+        console.log(error)
+    }
+}
  
   return (
     <div className='max-w-lg mx-auto p-3 w-full md:mt-7'>
@@ -158,7 +178,7 @@ export default function DashProfile() {
         <Button onClick={()=>setShowModal(true)} color={"red"} >
           Delete Account
         </Button>
-        <Button color={"red"} >Sign Out</Button>
+        <Button onClick={handleSignout} color={"red"} >Sign Out</Button>
       </div>
       <Modal
         show={showModal}
