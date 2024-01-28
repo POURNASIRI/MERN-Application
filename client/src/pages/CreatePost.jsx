@@ -5,19 +5,15 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { toast } from 'react-toastify';
 import { app } from '../firebase';
+import { useNavigate } from 'react-router-dom'
 
 function CreatePost() {
 
     //states
-    const [value, setValue] = useState('');
     const[file,setFile] = useState(null)
     const[formData,setFormData] = useState({})
     const[uploadImageLoading,setUploadImageLoading] = useState(false)
-
-
-
-
-
+    const navigate = useNavigate()
 
 
     // upload post image
@@ -37,6 +33,7 @@ function CreatePost() {
                 (snapshot)=>{
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     if(progress === 100){
+                        setUploadImageLoading(false)
                         toast.success("Image uploaded successfully",{autoClose: 1000,position: 'top-right'})
                     }
                 },
@@ -46,7 +43,6 @@ function CreatePost() {
                 },
                 ()=>{
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL)=>{
-                        setUploadImageLoading(false)
                         setFormData({...formData,image:downloadURL})
                     })
                 }
@@ -59,38 +55,38 @@ function CreatePost() {
    
     }
 
-
-
-
-
-    const handleChange = async (e)=>{
-        setFormData({...formData,[e.target.id]:e.target.value.trim()})
-    }
-   
-
+  
+    //publish post
     const handleSubmit = async (e)=>{
         e.preventDefault()
         try {
-            const res = await fetch('/api/post/create',{
+            const res = await fetch('/api/post/create-post',{
                 method:"POST",
                 headers: { "Content-Type": "application/json" },
-                body:JSON.stringify({...formData,value})
+                body:JSON.stringify(formData)
             })
             const data = await res.json()
-            console.log(data)
+            if(res.ok){
+                toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+                navigate(`/post/${data.post.slug}`)
+            }else{
+                toast.error(data.message,{autoClose: 1000,position: 'top-right'})
+            }
         } catch (error) {
-            
+            toast.error("Something went wrong please try again",{autoClose: 1000,position: 'top-right'})
+            console.log(error)
         }
     }
-
+    
+console.log(formData)
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
         <h1 className='text-3xl font-bold text-center mt-2'>Create Post</h1>
-        <form className='flex flex-col gap-3 mt-5'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-3 mt-5'>
             <div className='flex flex-col gap-4 sm:flex-row justify-between'>
-                <TextInput  className='flex-1' 
+                <TextInput value={formData.title} onChange={(e)=>setFormData({...formData,title:e.target.value})} className='flex-1' 
                 id="title" type="text" placeholder="Title" required/>
-                <Select onChange={handleChange} id="category" required className='w-full sm:w-1/3'>
+                <Select value={formData.category} onChange={(e)=>setFormData({...formData,category:e.target.value})} id="category" required className='w-full sm:w-1/3'>
                    <option value="unCategorized">Select a Category</option> 
                    <option value="javaScript">Java Script</option> 
                    <option value="react">React.js</option> 
@@ -98,7 +94,7 @@ function CreatePost() {
                 </Select>
             </div>
             <div className='flex gap-4 items-center justify-between border-2 p-4 rounded-md border-indigo-300'>
-                <FileInput accept='image/*' onChange={(e)=>setFile(e.target.files[0])}/>
+                <FileInput  accept='image/*' onChange={(e)=>setFile(e.target.files[0])}/>
                 <Button onClick={handleUploadImage} type='button' color="indigo">
                     {
                         uploadImageLoading ? <div>
@@ -111,7 +107,7 @@ function CreatePost() {
             {
                 formData.image && <img className='w-full h-80 object-cover' src={formData.image} alt=""/>
             }
-            <ReactQuill  theme="snow" value={value} onChange={setValue}  placeholder='Write your post...'
+            <ReactQuill  theme="snow" value={formData.content}  onChange={(value)=>setFormData({...formData,content:value})}  placeholder='Write your post...'
              className='pb-4 mb-4 mt-2 h-80 'required/>
             <Button type='submit' gradientDuoTone="purpleToBlue" className='mt-5 font-bold'outline>Create Post</Button>
         </form>
