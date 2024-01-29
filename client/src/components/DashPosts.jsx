@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Table, TableCell, TableHeadCell, TableRow } from 'flowbite-react'
+import { Button, Table, TableCell, TableHeadCell, TableRow } from 'flowbite-react'
 import {Link} from 'react-router-dom'
 
 export default function DashPosts() {
 
+    //state
     const {currentUser} = useSelector(state => state.user)
     const [posts,setPosts] = useState([])
+    const[showMore,setShowMore] = useState(false)
+
+
+    // get posts
     useEffect(()=>{
         const getPosts = async ()=>{
           try {
@@ -14,6 +19,9 @@ export default function DashPosts() {
               const data = await res.json()
               if(res.ok){
                 setPosts(data.posts)
+                if(data.posts.length > 9){
+                  setShowMore(true)
+                }
               }
           } catch (error) {
             console.log(error)
@@ -25,15 +33,33 @@ export default function DashPosts() {
           
     },[currentUser._id])
 
+
+    // show more btn
+    const handleShowMore = async()=>{
+      const startIndex = posts.length
+          try {
+              const res = await fetch(`/api/post/get-posts?userId=${currentUser._id}&startIndex=${startIndex}`)
+              const data = await res.json()
+              if(res.ok){
+                setPosts((prev)=>[...prev,...data.posts])
+                if(data.posts.length < 9){
+                  setShowMore(false)
+                }
+              }
+          } catch (error) {
+            console.log(error)
+          }
+    }
+
   
   return (
     <div className='table-auto overflow-x-scroll 
     md:mx-auto p-3 scrollbar scrollbar-track-slate-100
      scrollbar-thumb-slate-300 md:overflow-hidden
-     dark:scrollbar-track-slate-100
-    '>
+     dark:scrollbar-track-slate-100'>
       {
         currentUser.isAdmin && posts.length > 0 ? (
+          <>
           <Table hoverable className='shadow-md max-w-6xl mx-auto'>
             <Table.Head>
               <TableHeadCell>Date updated</TableHeadCell>
@@ -80,10 +106,16 @@ export default function DashPosts() {
                     </Table.Cell>
                   </TableRow>
                 </Table.Body>
-                ))
-            }
-            
-          </Table>
+                ))}
+          </Table> 
+          {
+            showMore && (
+              <Button onClick={handleShowMore}  className='w-full self-center text-sm py-7'>
+                  show more
+              </Button>
+            )
+          }    
+          </>
         ) : (
           <h1 className="text-center text-3xl">Loading...</h1>
         )
