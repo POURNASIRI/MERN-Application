@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { Button, Table, TableCell, TableHeadCell, TableRow } from 'flowbite-react'
+import { Button, Modal, Table,  TableHeadCell, TableRow} from 'flowbite-react'
 import {Link} from 'react-router-dom'
+import { toast } from 'react-toastify'
+import {HiOutlineExclamationCircle} from 'react-icons/hi'
 
 export default function DashPosts() {
 
@@ -9,6 +11,8 @@ export default function DashPosts() {
     const {currentUser} = useSelector(state => state.user)
     const [posts,setPosts] = useState([])
     const[showMore,setShowMore] = useState(false)
+    const[showModal,setShowModal] = useState(false)
+    const [postToBeDeleted,setPostToBeDeleted] = useState('')
 
 
     // get posts
@@ -51,6 +55,27 @@ export default function DashPosts() {
           }
     }
 
+
+    // delete post
+    const handleDeletePost = async()=>{
+      setShowModal(false);
+          try {
+            const res = await fetch(`/api/post/delete-post/${postToBeDeleted}/${currentUser._id}`,{
+              method:"DELETE",
+            })
+            const data = await res.json()
+            if(!res.ok){
+              toast.error(data.message,{autoClose: 1000,position: 'top-right'})
+             
+            }else{
+              setPosts(posts.filter(post => post._id !== postToBeDeleted))
+              toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+            }
+          } catch (error) {
+            console.log(error)
+          }
+    }
+
   
   return (
     <div className='table-auto overflow-x-scroll 
@@ -73,7 +98,7 @@ export default function DashPosts() {
             </Table.Head>
             {
                 posts.map(post => (
-                <Table.Body>
+                <Table.Body key={post._id}>
                   <TableRow>
                     <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
                     <Table.Cell>
@@ -95,7 +120,11 @@ export default function DashPosts() {
                       {post.category}
                     </Table.Cell>
                     <Table.Cell>
-                      <button className="text-red-500">
+                      <button
+                      onClick={()=>{
+                        setPostToBeDeleted(post._id);
+                        setShowModal(true)}}
+                      className="text-red-500">
                         Delete
                       </button>
                     </Table.Cell>
@@ -106,6 +135,9 @@ export default function DashPosts() {
                     </Table.Cell>
                   </TableRow>
                 </Table.Body>
+                
+
+
                 ))}
           </Table> 
           {
@@ -120,6 +152,30 @@ export default function DashPosts() {
           <h1 className="text-center text-3xl">Loading...</h1>
         )
       }
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure'onClick={()=>handleDeletePost(postToBeDeleted)}>
+                Yes, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   )
 }
