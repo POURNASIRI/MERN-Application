@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CreatePost from './pages/CreatePost.jsx';
 import OnlyAdminPriviteRoute from './components/OnlyAdminPriviteRoute.jsx';
+import UpdatePost from './pages/UpdatePost.jsx';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         </Route>
         <Route element={<OnlyAdminPriviteRoute/>}>
         <Route path='/create-post' element={<CreatePost/>}/>
+        <Route path='/update-post/:postId' element={<UpdatePost/>}/>
         </Route>
         <Route path='/signin' element={<SignIn/>}/>
         <Route path='/signup' element={<SignUp/>}/>

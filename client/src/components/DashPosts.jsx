@@ -135,9 +135,6 @@ export default function DashPosts() {
                     </Table.Cell>
                   </TableRow>
                 </Table.Body>
-                
-
-
                 ))}
           </Table> 
           {
