@@ -127,3 +127,19 @@ export const getallusers = async(req,res,next)=>{
         next(error)
     }
 }
+
+
+export const deleteusers = async(req,res,next)=>{
+
+        if(!req.user.isAdmin || !req.user.id === req.params.userId){
+            next(errorHandler(403,"you are not allowed to delete a user"))
+        }
+    try {
+        await User.findByIdAndDelete(req.params.userId)
+        res.status(200).json({
+            message:"User deleted successfully"
+        })
+    } catch (error) {
+        next(error)
+    }
+}

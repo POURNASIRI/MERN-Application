@@ -68,6 +68,14 @@ export default function DashSidebar() {
                           Posts
                       </Sidebar.Item>
                       </Link>
+                      <Link to={'/dashboard?tab=users'}>
+                      <Sidebar.Item
+                      as='div'
+                      className='cursor-pointer' active={tab === "users"}
+                      icon={HiUser} labelColor="dark ">
+                          Users
+                      </Sidebar.Item>
+                      </Link>
                     </>
                     )
                 }
