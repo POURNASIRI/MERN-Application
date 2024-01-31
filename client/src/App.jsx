@@ -1,10 +1,9 @@
 import {Route,Routes} from 'react-router-dom'
-import {Home,Projects,About,SignIn,SignUp, Header, FooterCom, Dashboard, PrivateRoute} from './index.js'
+import {Home,Projects,About,SignIn,SignUp, Header, FooterCom, 
+Dashboard, PrivateRoute, CreatePost, OnlyAdminPriviteRoute, UpdatePost, PostPage} from './index.js'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import CreatePost from './pages/CreatePost.jsx';
-import OnlyAdminPriviteRoute from './components/OnlyAdminPriviteRoute.jsx';
-import UpdatePost from './pages/UpdatePost.jsx';
+
 
 
 function App() {
@@ -16,14 +15,15 @@ function App() {
         <Route path='/projects' element={<Projects/>}/>
         <Route path='/about' element={<About/>}/>
         <Route element={<PrivateRoute />}>
-        <Route path='/dashboard' element={<Dashboard/>}/>
+          <Route path='/dashboard' element={<Dashboard/>}/>
         </Route>
         <Route element={<OnlyAdminPriviteRoute/>}>
-        <Route path='/create-post' element={<CreatePost/>}/>
-        <Route path='/update-post/:postId' element={<UpdatePost/>}/>
+          <Route path='/create-post' element={<CreatePost/>}/>
+          <Route path='/update-post/:postId' element={<UpdatePost/>}/>
         </Route>
         <Route path='/signin' element={<SignIn/>}/>
         <Route path='/signup' element={<SignUp/>}/>
+        <Route path='/Post/:postSlug' element={<PostPage/>}/>
       </Routes>
         <ToastContainer />
       <FooterCom/>
