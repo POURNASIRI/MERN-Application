@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {Link, useParams} from 'react-router-dom'
 import {Button} from 'flowbite-react'
+import CommentSection from '../components/CommentSection'
 
 function PostPage() {
 
@@ -32,8 +33,7 @@ function PostPage() {
     },[postSlug])
 
 
-    console.log(post)
-
+   
   return (
        <div className='min-h-screen' >
         {
@@ -62,6 +62,8 @@ function PostPage() {
                     </div>
             </div>
         }
+        <CommentSection postId = {post?._id}/>
+       
        </div>
    
   )

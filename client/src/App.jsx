@@ -1,6 +1,6 @@
 import {Route,Routes} from 'react-router-dom'
 import {Home,Projects,About,SignIn,SignUp, Header, FooterCom, 
-Dashboard, PrivateRoute, CreatePost, OnlyAdminPriviteRoute, UpdatePost, PostPage} from './index.js'
+Dashboard, PrivateRoute, CreatePost, OnlyAdminPriviteRoute, UpdatePost, PostPage, ScrollToTop} from './index.js'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,6 +10,7 @@ function App() {
   return (
     <div>
       <Header/>
+      <ScrollToTop/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/projects' element={<Projects/>}/>
