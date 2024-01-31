@@ -57,6 +57,9 @@ function PostPage() {
                     <span>{post && new Date(post.createdAt).toDateString()}</span>
                     <span>{post&& (post.content.length /1000).toFixed(0)} mins read</span>
                 </div>
+                    <div className='p-3 max-w-6xl w-full mx-auto post-content '  dangerouslySetInnerHTML={{__html: post?.content}}>
+
+                    </div>
             </div>
         }
        </div>
