@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import {Button, Textarea} from 'flowbite-react'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 function CommentSection({postId}) {
 
@@ -10,6 +11,29 @@ function CommentSection({postId}) {
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
+        if(comment.length > 200){
+            return
+        }
+        try {
+            const res = await fetch(`/api/comment/create-comment/`,{
+                method:"POST",
+                headers: { "Content-Type": "application/json" },
+                body:JSON.stringify({
+                    content:comment,
+                    postId,
+                    userId:currentUser._id
+                })
+            }) 
+            const data = await res.json()
+            if(res.ok){
+                setComment("")
+                toast.success(data.message,{autoClose: 1000,position: 'top-right'})
+            }else{
+                toast.error("Something went wrong",{autoClose: 1000,position: 'top-right'})
+            }  
+        } catch (error) {
+            console.log(error)
+        }
     }
    
   return (
