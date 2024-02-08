@@ -5,6 +5,7 @@ import users from './routes/user.route.js'
 import signup from './routes/auth.route.js'
 import signin from './routes/auth.route.js'
 import postRoute from './routes/post.route.js'
+import commentRoute from './routes/comment.route.js'
 import cookieParser from 'cookie-parser'
 
 dotenv.config()
@@ -31,6 +32,7 @@ app.use('/api/user/',users)
 app.use('/api/auth', signup)
 app.use('/api/auth', signin)
 app.use('/api/post', postRoute)
+app.use('/api/comment', commentRoute)
 
 
 

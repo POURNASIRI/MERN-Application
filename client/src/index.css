@@ -48,14 +48,14 @@ body{
     font-weight: 700;
     text-decoration: underline;
     font-family: sans-serif;
-    transition: all 0.3s ease;
+
   }
   .post-content code{
     background-color: black;
   }
   
   .post-content a:hover {
-        font-size: 1.1rem;
+        background-color: gold;
   }
   
   .dark .post-content a {
