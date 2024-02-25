@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import {Button, Textarea} from 'flowbite-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import Comment from './Comment'
 
 function CommentSection({postId}) {
 
@@ -30,6 +31,7 @@ function CommentSection({postId}) {
             const data = await res.json()
             if(res.ok){
                 setComment("")
+                setComments([...comments,data.comment])
                 toast.success(data.message,{autoClose: 1000,position: 'top-right'})
             }else{
                 toast.error("Something went wrong",{autoClose: 1000,position: 'top-right'})
@@ -110,6 +112,11 @@ function CommentSection({postId}) {
                                 <p>{comments.length}</p>
                             </div>
                         </div>
+                        {
+                            comments.map(comment=>(
+                                <Comment key={comment._id} comment={comment}/>
+                            ))
+                        }
                         </>
                     )
                 }
@@ -118,3 +125,6 @@ function CommentSection({postId}) {
 }
 
 export default CommentSection
+
+
+
